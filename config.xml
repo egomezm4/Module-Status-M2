@@ -1,0 +1,85 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1326.ve643e00e9220">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2150.v4cfd8916915c"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2150.v4cfd8916915c">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>nombreModulo</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Prueba para obtener la ubicacion de la carpeta de magento y archivos de instalación</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+      <abortPrevious>false</abortPrevious>
+    </org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>nombreModulo</name>
+          <description>Modulos Activos</description>
+          <defaultValue>Ingresa el nombre del modulo</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3837.v305192405b_c0">
+    <script>pipeline {
+    agent {label &apos;tiendas&apos;}
+    
+    /*Parametros de busqueda
+    parameters{
+        string(name: &apos;ubicacionDirectorios&apos;,
+        defaultValue: &apos;/home/Documents&apos;,
+        description: &apos;Ingrese el módulo a buscar en la ruta /home, verificar &apos;)
+    }
+    */
+    
+    parameters{
+        string(name: &apos;nombreModulo&apos;,
+        defaultValue: &apos;Ingresa el nombre del modulo&apos;, 
+        description: &apos;Modulos Activos&apos;)
+    }
+    
+    stages {
+        
+        /*
+        busqueda por ubicacion
+        stage(&apos;Buscar ubicación&apos;){
+            steps{
+                script{
+                    //valor del parametro ubicación
+                    def ubicacion = params.ubicacionDirectorios
+                    
+                    //utilizar ubicacion
+                    sh &quot;ls ${ubicacion}&quot;
+                }
+            }
+        }
+        */
+       
+    
+        stage(&apos;Module_Status&apos;) {
+            steps {
+                // Ejecutar el comando &apos;ls&apos; para listar los documentos en el directorio &apos;/ruta/al/directorio&apos;
+                script{
+                def modulo = params.nombreModulo
+                sh &quot;/usr/share/nginx/html/public_html/bin/magento module:status ${modulo}&quot;
+            }
+            }
+        }
+        
+        }
+        
+    }
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
